@@ -1,9 +1,9 @@
 import { Image3CoreError } from '../errors/core-error.js';
 import {
   DEFAULT_MEMORY_BUDGET_BYTES,
-  estimateWorkingSetBytes,
   recommendedWorkerCount,
 } from '../memory/estimator.js';
+import { estimateInputWorkingSet } from '../memory/preflight.js';
 import { WeightedScheduler } from '../queue/scheduler.js';
 import type {
   ConversionOptions,
@@ -60,7 +60,7 @@ export class Image3WorkerPool {
     }
   }
 
-  convert(
+  async convert(
     input: ImageInput,
     options: ConversionOptions,
     config: {
@@ -68,9 +68,7 @@ export class Image3WorkerPool {
       readonly onProgress?: (progress: ConversionProgress) => void;
     } = {},
   ): Promise<ConversionResult> {
-    const inputBytes =
-      input.data instanceof ArrayBuffer ? input.data.byteLength : input.data.size;
-    const weight = estimateWorkingSetBytes({ inputBytes });
+    const weight = await estimateInputWorkingSet(input);
 
     return this.scheduler.enqueue(
       weight,
