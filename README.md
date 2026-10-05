@@ -1,5 +1,7 @@
 # PFx Image3
 
+Live app: https://pfxamd.github.io/pfx-image3/
+
 Browser-first image conversion core for **JPG, PNG and WEBP**.
 
 `Core v0.1` is frozen as the conversion engine. The browser application lives in a separate `app/` layer and consumes the public core API.
