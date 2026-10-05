@@ -34,6 +34,18 @@ export function workspaceReducer(
           ...state.settings,
           ...action.patch,
         },
+        items: state.items.map((item) =>
+          item.status === 'converting'
+            ? item
+            : {
+                ...item,
+                status: 'ready',
+                progress: 0,
+                stage: undefined,
+                result: undefined,
+                error: undefined,
+              },
+        ),
       };
 
     case 'start':
