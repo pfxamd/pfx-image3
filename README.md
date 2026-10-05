@@ -95,3 +95,9 @@ npm run test:browser
 ## Scope
 
 The next phase can consume this core to build the PFx Image3 GitHub Pages interface without coupling UI code to codec or scheduling internals.
+
+## License
+
+Copyright 2026 PFxamd.
+
+PFx Image3 is licensed under Apache-2.0. Third-party codec notices are documented in `THIRD_PARTY_NOTICES.md`.
