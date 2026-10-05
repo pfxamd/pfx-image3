@@ -1,6 +1,7 @@
 import {
   Image3Core,
   Image3CoreError,
+  Image3WorkerPool,
 } from '../src/index.ts';
 import { estimateInputWorkingSet } from '../src/memory/preflight.ts';
 import { convertInline } from '../src/pipeline/convert.ts';
@@ -11,6 +12,7 @@ type EdgeStressReport = {
   readonly corrupted: readonly string[];
   readonly cancelled: boolean;
   readonly retryAttempts: number;
+  readonly workerRecovery: boolean;
   readonly stress: {
     readonly items: number;
     readonly width: number;
@@ -33,10 +35,11 @@ window.runImage3EdgeStressSuite = async () => {
   const corrupted = await testCorruptedInputs();
   const cancelled = await testCancellation();
   const retryAttempts = await testRetry();
+  const workerRecovery = await testWorkerCancellationRecovery();
   const stress = await testStressBatch();
   const benchmark = await runBenchmark();
 
-  return { corrupted, cancelled, retryAttempts, stress, benchmark };
+  return { corrupted, cancelled, retryAttempts, workerRecovery, stress, benchmark };
 };
 
 async function testCorruptedInputs(): Promise<string[]> {
@@ -111,6 +114,63 @@ async function testRetry(): Promise<number> {
   assert(value === 'recovered', 'Retry did not recover');
   assert(attempts === 2, `Unexpected retry attempts: ${attempts}`);
   return attempts;
+}
+
+async function testWorkerCancellationRecovery(): Promise<boolean> {
+  const source = await makePngSource(1280, 960);
+  const pool = new Image3WorkerPool({
+    workerFactory: () =>
+      new Worker(new URL('../src/workers/conversion.worker.ts', import.meta.url), {
+        type: 'module',
+      }),
+    size: 1,
+    memoryBudgetBytes: 64 * 1024 * 1024,
+  });
+
+  try {
+    const controller = new AbortController();
+    const cancelled = pool.convert(
+      { data: source.slice(0), name: 'cancel.png' },
+      { format: 'png', compressionLevel: 6 },
+      {
+        signal: controller.signal,
+        onProgress: (progress) => {
+          if (progress.stage === 'encoding') controller.abort();
+        },
+      },
+    );
+
+    await expectCoreError(cancelled, 'CANCELLED');
+
+    const recovered = await pool.convert(
+      { data: source.slice(0), name: 'recovery.png' },
+      { format: 'webp', quality: 78 },
+    );
+
+    assert(
+      detectImageFormat(recovered.buffer) === 'webp',
+      'Replacement worker failed after cancellation',
+    );
+
+    return true;
+  } finally {
+    pool.terminate();
+  }
+}
+
+async function expectCoreError(
+  promise: Promise<unknown>,
+  code: Image3CoreError['code'],
+): Promise<void> {
+  try {
+    await promise;
+  } catch (error) {
+    assert(error instanceof Image3CoreError, 'Expected a typed core error');
+    assert(error.code === code, `Expected ${code}, received ${error.code}`);
+    return;
+  }
+
+  throw new Error(`Expected ${code} rejection`);
 }
 
 async function testStressBatch() {
