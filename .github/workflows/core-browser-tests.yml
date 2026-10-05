@@ -35,6 +35,12 @@ jobs:
       - name: Build core
         run: npm run build
 
+      - name: Typecheck app
+        run: npm run typecheck:app
+
+      - name: Build app
+        run: npm run build:app
+
       - name: Install browsers
         run: npx playwright install --with-deps chromium firefox
 
