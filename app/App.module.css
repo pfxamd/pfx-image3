@@ -1,0 +1,145 @@
+.app {
+  min-height: 100vh;
+}
+
+.header {
+  width: min(1180px, calc(100% - 40px));
+  height: 76px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.brand > span:last-child {
+  display: grid;
+  gap: 1px;
+}
+
+.brand strong {
+  font-size: 14px;
+  letter-spacing: -0.01em;
+}
+
+.brand small {
+  color: #85898d;
+  font-size: 11px;
+}
+
+.mark {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #34373a;
+  border-radius: 10px;
+  background: #181a1c;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.localBadge {
+  color: #8d9195;
+  font-size: 12px;
+}
+
+.main {
+  width: min(1180px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 56px 0 96px;
+}
+
+.emptyState {
+  width: min(760px, 100%);
+  margin: 7vh auto 0;
+}
+
+.intro {
+  width: min(600px, 100%);
+  margin-bottom: 34px;
+}
+
+.eyebrow {
+  margin: 0 0 12px;
+  color: #777c80;
+  font-size: 11px;
+  font-weight: 650;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.intro h1,
+.workspaceTop h1 {
+  margin: 0;
+  letter-spacing: -0.045em;
+  font-weight: 620;
+}
+
+.intro h1 {
+  max-width: 650px;
+  font-size: clamp(38px, 6vw, 64px);
+  line-height: 0.98;
+}
+
+.intro > p:last-child {
+  max-width: 500px;
+  margin: 20px 0 0;
+  color: #969a9e;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+.workspace {
+  display: grid;
+  gap: 24px;
+}
+
+.workspaceTop {
+  min-height: 80px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 28px;
+}
+
+.workspaceTop h1 {
+  font-size: clamp(30px, 4vw, 46px);
+}
+
+@media (max-width: 720px) {
+  .header,
+  .main {
+    width: min(100% - 28px, 1180px);
+  }
+
+  .header {
+    height: 68px;
+  }
+
+  .localBadge {
+    display: none;
+  }
+
+  .main {
+    padding-top: 28px;
+    padding-bottom: 56px;
+  }
+
+  .emptyState {
+    margin-top: 4vh;
+  }
+
+  .workspaceTop {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 18px;
+  }
+}
