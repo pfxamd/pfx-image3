@@ -1,11 +1,11 @@
 import {
   Image3Core,
   Image3CoreError,
-  convertInline,
-  detectImageFormat,
-  estimateInputWorkingSet,
-  withRetry,
 } from '../src/index.ts';
+import { estimateInputWorkingSet } from '../src/memory/preflight.ts';
+import { convertInline } from '../src/pipeline/convert.ts';
+import { detectImageFormat } from '../src/pipeline/detect-format.ts';
+import { withRetry } from '../src/retry/retry.ts';
 
 type EdgeStressReport = {
   readonly corrupted: readonly string[];
