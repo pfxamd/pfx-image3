@@ -1,4 +1,4 @@
-import { Image3CoreError } from '../errors/core-error.js';
+import { Image3CoreError, throwIfAborted } from '../errors/core-error.js';
 import {
   DEFAULT_MEMORY_BUDGET_BYTES,
   recommendedWorkerCount,
@@ -68,7 +68,9 @@ export class Image3WorkerPool {
       readonly onProgress?: (progress: ConversionProgress) => void;
     } = {},
   ): Promise<ConversionResult> {
+    throwIfAborted(config.signal);
     const weight = await estimateInputWorkingSet(input);
+    throwIfAborted(config.signal);
 
     return this.scheduler.enqueue(
       weight,
