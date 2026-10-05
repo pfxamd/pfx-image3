@@ -18,6 +18,7 @@ export class WeightedScheduler {
   private activeCount = 0;
   private activeBytes = 0;
   private paused = false;
+  private closedError: unknown;
 
   constructor(private readonly options: WeightedSchedulerOptions) {
     if (options.concurrency < 1) throw new RangeError('concurrency must be >= 1');
@@ -31,6 +32,10 @@ export class WeightedScheduler {
     task: () => Promise<T>,
     signal?: AbortSignal,
   ): Promise<T> {
+    if (this.closedError !== undefined) {
+      return Promise.reject(this.closedError);
+    }
+
     if (signal?.aborted) {
       return Promise.reject(new Image3CoreError('CANCELLED', 'Job was cancelled.'));
     }
@@ -43,18 +48,32 @@ export class WeightedScheduler {
         reject,
         ...(signal ? { signal } : {}),
       };
+
       this.pending.push(item as QueueItem<unknown>);
       this.pump();
     });
   }
 
   pause(): void {
-    this.paused = true;
+    if (this.closedError === undefined) this.paused = true;
   }
 
   resume(): void {
+    if (this.closedError !== undefined) return;
     this.paused = false;
     this.pump();
+  }
+
+  close(
+    error: unknown = new Image3CoreError('CANCELLED', 'Scheduler was closed.'),
+  ): void {
+    if (this.closedError !== undefined) return;
+
+    this.closedError = error;
+    this.paused = true;
+
+    const pending = this.pending.splice(0);
+    for (const item of pending) item.reject(error);
   }
 
   get stats(): Readonly<{
@@ -62,17 +81,19 @@ export class WeightedScheduler {
     active: number;
     activeBytes: number;
     paused: boolean;
+    closed: boolean;
   }> {
     return {
       pending: this.pending.length,
       active: this.activeCount,
       activeBytes: this.activeBytes,
       paused: this.paused,
+      closed: this.closedError !== undefined,
     };
   }
 
   private pump(): void {
-    if (this.paused) return;
+    if (this.paused || this.closedError !== undefined) return;
 
     while (this.activeCount < this.options.concurrency) {
       const index = this.findRunnableIndex();
@@ -111,6 +132,7 @@ export class WeightedScheduler {
 
       if (fitsBudget || allowOversizedSoloJob) return index;
     }
+
     return -1;
   }
 }
