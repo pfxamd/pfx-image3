@@ -58,3 +58,20 @@ test('app uploads and converts an image through the worker core', async ({ page 
   await expect(page.getByRole('button', { name: 'Download', exact: true })).toBeVisible();
   expect(pageErrors).toEqual([]);
 });
+
+
+test('app remains within the viewport on a narrow mobile layout', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  await expect(
+    page.getByRole('heading', { name: 'Convert images in your browser.' }),
+  ).toBeVisible();
+
+  const overflow = await page.evaluate(() => {
+    return document.documentElement.scrollWidth - document.documentElement.clientWidth;
+  });
+
+  expect(overflow).toBeLessThanOrEqual(1);
+  await expect(page.getByRole('button', { name: 'Choose images' })).toBeVisible();
+});
