@@ -10,6 +10,7 @@ export async function withRetry<T>(
   options: RetryOptions = {},
 ): Promise<T> {
   const maxAttempts = options.maxAttempts ?? 2;
+
   if (!Number.isInteger(maxAttempts) || maxAttempts < 1) {
     throw new RangeError('maxAttempts must be an integer >= 1');
   }
@@ -30,12 +31,8 @@ export async function withRetry<T>(
 }
 
 function defaultShouldRetry(error: unknown): boolean {
-  if (!(error instanceof Image3CoreError)) return true;
-
-  return ![
-    'CANCELLED',
-    'INVALID_FILE',
-    'UNSUPPORTED_FORMAT',
-    'OUT_OF_MEMORY',
-  ].includes(error.code);
+  return (
+    !(error instanceof Image3CoreError) ||
+    error.code === 'INTERNAL_ERROR'
+  );
 }
