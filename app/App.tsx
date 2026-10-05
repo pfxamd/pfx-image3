@@ -4,6 +4,7 @@ import { DropZone } from './components/DropZone.js';
 import { FileList } from './components/FileList.js';
 import { useImageWorkspace } from './features/workspace/useImageWorkspace.js';
 import { formatBytes } from './lib/format.js';
+import logoUrl from './assets/Red-pfx.svg';
 import styles from './App.module.css';
 
 export function App() {
@@ -26,11 +27,13 @@ export function App() {
       <header className={styles.header}>
         <a className={styles.brand} href="./" aria-label="PFx Image3 home">
           <span className={styles.mark} aria-hidden="true">
-            <span />
-            <span />
+            <img src={logoUrl} alt="" />
           </span>
           <span className={styles.brandCopy}>
-            <strong>PFx Image3</strong>
+            <span className={styles.brandTitle}>
+              <strong>PFx Image3</strong>
+              <span className={styles.betaBadge}>Beta 0.1</span>
+            </span>
             <small>Image converter</small>
           </span>
         </a>
