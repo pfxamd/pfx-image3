@@ -56,7 +56,10 @@ export function useImageWorkspace() {
       file,
       previewUrl: URL.createObjectURL(file),
       status: 'ready',
+      stage: undefined,
       progress: 0,
+      result: undefined,
+      error: undefined,
     }));
 
     if (items.length > 0) {
@@ -121,7 +124,7 @@ export function useImageWorkspace() {
               {
                 data: item.file,
                 name: item.file.name,
-                mimeType: item.file.type || undefined,
+                ...(item.file.type ? { mimeType: item.file.type } : {}),
               },
               options,
               {
