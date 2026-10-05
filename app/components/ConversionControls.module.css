@@ -1,101 +1,173 @@
 .controls {
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 28px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.018), transparent),
+    var(--surface-1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
+}
+
+.settingsArea {
+  min-width: 0;
+  display: flex;
   align-items: end;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 18px;
-  border: 1px solid #2b2e31;
-  border-radius: 18px;
-  background: #17191a;
 }
 
 .fieldGroup,
-.rangeField {
+.rangeField,
+.toggle {
   display: grid;
   gap: 8px;
 }
 
 .label {
-  color: #858a8e;
-  font-size: 11px;
-  font-weight: 650;
-  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 720;
+  letter-spacing: 0.11em;
   text-transform: uppercase;
 }
 
 .segmented {
   display: flex;
   padding: 3px;
-  border: 1px solid #303336;
+  border: 1px solid var(--line);
   border-radius: 11px;
-  background: #111314;
+  background: #0d1012;
 }
 
 .segment,
 .activeSegment {
-  min-width: 58px;
+  min-width: 60px;
   min-height: 34px;
   border: 0;
   border-radius: 8px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 11px;
+  font-weight: 720;
+  transition:
+    background 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
 }
 
 .segment {
   background: transparent;
-  color: #8f9498;
+  color: var(--text-muted);
+}
+
+.segment:hover:not(:disabled) {
+  color: var(--text-soft);
 }
 
 .activeSegment {
-  background: #eeeeee;
-  color: #111314;
+  background: var(--accent-soft);
+  color: #d9dcff;
+  box-shadow: inset 0 0 0 1px var(--accent-line);
 }
 
 .segment:disabled,
 .activeSegment:disabled {
   cursor: not-allowed;
-  opacity: 0.55;
+  opacity: 0.48;
 }
 
 .rangeField {
-  min-width: 190px;
+  min-width: 210px;
 }
 
 .rangeRow {
-  min-height: 40px;
+  min-height: 38px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .rangeRow input {
-  width: 150px;
-  accent-color: #f3f4f4;
+  width: 160px;
+  accent-color: var(--accent);
 }
 
 .rangeRow output {
-  min-width: 30px;
-  color: #b8bbbd;
-  font-size: 12px;
-  text-align: right;
+  min-width: 32px;
+  padding: 5px 6px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: #0d1012;
+  color: var(--text-soft);
+  font-size: 10px;
+  text-align: center;
 }
 
 .toggle {
-  min-height: 40px;
+  min-width: 118px;
+}
+
+.toggleControl {
+  min-height: 38px;
   display: flex;
   align-items: center;
   gap: 9px;
-  color: #b8bbbd;
-  font-size: 13px;
+  color: var(--text-soft);
+  font-size: 11px;
 }
 
-.toggle input {
-  accent-color: #f3f4f4;
+.toggleControl input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switch {
+  position: relative;
+  width: 34px;
+  height: 20px;
+  display: block;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: #0d1012;
+  transition:
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.switch i {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: var(--text-muted);
+  transition:
+    transform 140ms ease,
+    background 140ms ease;
+}
+
+.toggleControl input:checked + .switch {
+  border-color: var(--accent-line);
+  background: var(--accent-soft);
+}
+
+.toggleControl input:checked + .switch i {
+  transform: translateX(14px);
+  background: var(--accent);
+}
+
+.toggleControl input:focus-visible + .switch {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
 }
 
 .actions {
-  margin-left: auto;
+  flex: 0 0 auto;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -106,51 +178,88 @@
 .quietButton {
   min-height: 40px;
   padding: 0 14px;
-  border-radius: 11px;
+  border-radius: 10px;
   cursor: pointer;
-  font-size: 12px;
-  font-weight: 650;
+  font-size: 11px;
+  font-weight: 690;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
 }
 
 .primaryButton {
-  border: 1px solid #f2f3f3;
-  background: #f2f3f3;
-  color: #111314;
+  min-width: 118px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #0b0d0f;
+}
+
+.primaryButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.actionArrow {
+  font-size: 13px;
 }
 
 .secondaryButton {
-  border: 1px solid #363a3d;
-  background: #202224;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-2);
+  color: var(--text-soft);
+}
+
+.secondaryButton:hover:not(:disabled) {
+  border-color: #434b53;
+  background: var(--surface-3);
 }
 
 .quietButton {
   border: 1px solid transparent;
   background: transparent;
-  color: #81868a;
+  color: var(--text-muted);
+}
+
+.quietButton:hover:not(:disabled) {
+  color: var(--text-soft);
 }
 
 .primaryButton:disabled,
 .secondaryButton:disabled,
 .quietButton:disabled {
   cursor: not-allowed;
-  opacity: 0.42;
+  opacity: 0.38;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 980px) {
   .controls {
     align-items: stretch;
+    flex-direction: column;
+    gap: 18px;
   }
 
   .actions {
     width: 100%;
-    margin-left: 0;
-    padding-top: 4px;
+    justify-content: flex-end;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
   }
 }
 
-@media (max-width: 560px) {
+@media (max-width: 620px) {
+  .settingsArea {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
   .fieldGroup,
-  .rangeField {
+  .rangeField,
+  .toggle {
     width: 100%;
   }
 
@@ -166,6 +275,11 @@
   .actions {
     display: grid;
     grid-template-columns: 1fr 1fr;
+  }
+
+  .primaryButton,
+  .secondaryButton {
+    width: 100%;
   }
 
   .quietButton {
