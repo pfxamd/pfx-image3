@@ -29,80 +29,91 @@ export function ConversionControls({
 
   return (
     <section className={styles.controls} aria-label="Conversion settings">
-      <div className={styles.fieldGroup}>
-        <span className={styles.label}>Output</span>
-        <div className={styles.segmented}>
-          {(['jpeg', 'png', 'webp'] as const).map((value) => (
-            <button
-              key={value}
-              type="button"
-              className={format === value ? styles.activeSegment : styles.segment}
-              disabled={disabled}
-              aria-pressed={format === value}
-              onClick={() => onSettings({ format: value as ImageFormat })}
-            >
-              {value === 'jpeg' ? 'JPG' : value.toUpperCase()}
-            </button>
-          ))}
+      <div className={styles.settingsArea}>
+        <div className={styles.fieldGroup}>
+          <span className={styles.label}>Output</span>
+          <div className={styles.segmented}>
+            {(['jpeg', 'png', 'webp'] as const).map((value) => (
+              <button
+                key={value}
+                type="button"
+                className={
+                  format === value ? styles.activeSegment : styles.segment
+                }
+                disabled={disabled}
+                aria-pressed={format === value}
+                onClick={() => onSettings({ format: value as ImageFormat })}
+              >
+                {value === 'jpeg' ? 'JPG' : value.toUpperCase()}
+              </button>
+            ))}
+          </div>
         </div>
+
+        {(format === 'jpeg' ||
+          (format === 'webp' && !settings.webpLossless)) && (
+          <label className={styles.rangeField}>
+            <span className={styles.label}>Quality</span>
+            <div className={styles.rangeRow}>
+              <input
+                type="range"
+                min="1"
+                max="100"
+                value={settings.quality}
+                disabled={disabled}
+                onChange={(event) =>
+                  onSettings({ quality: Number(event.target.value) })
+                }
+              />
+              <output>{settings.quality}</output>
+            </div>
+          </label>
+        )}
+
+        {format === 'png' && (
+          <label className={styles.rangeField}>
+            <span className={styles.label}>Compression</span>
+            <div className={styles.rangeRow}>
+              <input
+                type="range"
+                min="1"
+                max="6"
+                step="1"
+                value={settings.pngCompressionLevel}
+                disabled={disabled}
+                onChange={(event) =>
+                  onSettings({
+                    pngCompressionLevel: Number(
+                      event.target.value,
+                    ) as WorkspaceSettings['pngCompressionLevel'],
+                  })
+                }
+              />
+              <output>{settings.pngCompressionLevel}</output>
+            </div>
+          </label>
+        )}
+
+        {format === 'webp' && (
+          <label className={styles.toggle}>
+            <span className={styles.label}>Mode</span>
+            <span className={styles.toggleControl}>
+              <input
+                type="checkbox"
+                checked={settings.webpLossless}
+                disabled={disabled}
+                onChange={(event) =>
+                  onSettings({ webpLossless: event.target.checked })
+                }
+              />
+              <span className={styles.switch} aria-hidden="true">
+                <i />
+              </span>
+              <span>{settings.webpLossless ? 'Lossless' : 'Lossy'}</span>
+            </span>
+          </label>
+        )}
       </div>
-
-      {(format === 'jpeg' || (format === 'webp' && !settings.webpLossless)) && (
-        <label className={styles.rangeField}>
-          <span className={styles.label}>Quality</span>
-          <div className={styles.rangeRow}>
-            <input
-              type="range"
-              min="1"
-              max="100"
-              value={settings.quality}
-              disabled={disabled}
-              onChange={(event) =>
-                onSettings({ quality: Number(event.target.value) })
-              }
-            />
-            <output>{settings.quality}</output>
-          </div>
-        </label>
-      )}
-
-      {format === 'png' && (
-        <label className={styles.rangeField}>
-          <span className={styles.label}>Compression</span>
-          <div className={styles.rangeRow}>
-            <input
-              type="range"
-              min="1"
-              max="6"
-              step="1"
-              value={settings.pngCompressionLevel}
-              disabled={disabled}
-              onChange={(event) =>
-                onSettings({
-                  pngCompressionLevel: Number(
-                    event.target.value,
-                  ) as WorkspaceSettings['pngCompressionLevel'],
-                })
-              }
-            />
-            <output>{settings.pngCompressionLevel}</output>
-          </div>
-        </label>
-      )}
-
-      {format === 'webp' && (
-        <label className={styles.toggle}>
-          <input
-            type="checkbox"
-            checked={settings.webpLossless}
-            disabled={disabled}
-            onChange={(event) =>
-              onSettings({ webpLossless: event.target.checked })
-            }
-          />
-          <span>Lossless</span>
-        </label>
-      )}
 
       <div className={styles.actions}>
         {activeCount > 0 ? (
@@ -119,7 +130,10 @@ export function ConversionControls({
             className={styles.primaryButton}
             onClick={onConvertAll}
           >
-            Convert all
+            <span>Convert all</span>
+            <span className={styles.actionArrow} aria-hidden="true">
+              ↗
+            </span>
           </button>
         )}
 
