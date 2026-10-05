@@ -4,6 +4,7 @@ import {
   type ChangeEvent,
   type DragEvent,
 } from 'react';
+import { motion } from 'motion/react';
 import styles from './DropZone.module.css';
 
 interface DropZoneProps {
@@ -49,7 +50,7 @@ export function DropZone({
 
   return (
     <div className={styles.wrapper}>
-      <div
+      <motion.div
         data-testid="drop-zone"
         className={[
           styles.dropZone,
@@ -58,6 +59,8 @@ export function DropZone({
         ]
           .filter(Boolean)
           .join(' ')}
+        animate={dragging ? { scale: 1.008 } : { scale: 1 }}
+        transition={{ duration: 0.16 }}
         onDragEnter={(event) => {
           event.preventDefault();
           setDragging(true);
@@ -77,10 +80,20 @@ export function DropZone({
           onChange={onInput}
         />
 
+        {!compact && (
+          <div className={styles.dropVisual} aria-hidden="true">
+            <span className={styles.frame}>
+              <span className={styles.frameDot} />
+              <span className={styles.frameLine} />
+            </span>
+            <span className={styles.plus}>+</span>
+          </div>
+        )}
+
         <div className={styles.copy}>
-          <strong>{compact ? 'Add more images' : 'Drop images here'}</strong>
+          <strong>{compact ? 'Add images' : 'Drop images here'}</strong>
           {!compact && (
-            <span>JPG, PNG and WebP · multiple files supported</span>
+            <span>One image or a batch · JPG, PNG and WebP</span>
           )}
         </div>
 
@@ -89,9 +102,9 @@ export function DropZone({
           className={styles.browseButton}
           onClick={() => inputRef.current?.click()}
         >
-          Choose images
+          {compact ? 'Browse' : 'Choose images'}
         </button>
-      </div>
+      </motion.div>
 
       {message && (
         <p className={styles.message} role="status">
