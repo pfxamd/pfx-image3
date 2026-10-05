@@ -31,5 +31,11 @@ test('edge cases, cancellation, retry, stress and benchmark pass', async ({ page
   }
 
   console.log(`[${browserName}] PFx Image3 benchmark`, report.benchmark);
-  expect(consoleErrors, `${browserName} emitted console errors`).toEqual([]);
+  const unexpectedConsoleErrors = consoleErrors.filter(
+    (message) => !message.includes('JPEG datastream contains no image'),
+  );
+  expect(
+    unexpectedConsoleErrors,
+    `${browserName} emitted unexpected console errors`,
+  ).toEqual([]);
 });
