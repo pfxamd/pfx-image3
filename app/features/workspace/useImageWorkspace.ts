@@ -3,11 +3,11 @@ import {
   useEffect,
   useReducer,
   useRef,
-  useState,
 } from 'react';
 import {
   Image3CoreError,
   type ConversionResult,
+  type Image3WorkerPool,
 } from '../../../src/index.js';
 import { createImage3WorkerPool } from '../../lib/createWorkerPool.js';
 import { downloadResult, downloadResults } from '../../lib/download.js';
@@ -25,7 +25,7 @@ export function useImageWorkspace() {
     workspaceReducer,
     initialWorkspaceState,
   );
-  const [pool] = useState(createImage3WorkerPool);
+  const poolRef = useRef<Image3WorkerPool | null>(null);
   const controllers = useRef(new Map<string, AbortController>());
   const stateRef = useRef(state);
 
@@ -34,7 +34,12 @@ export function useImageWorkspace() {
   }, [state]);
 
   useEffect(() => {
+    const pool = createImage3WorkerPool();
+    poolRef.current = pool;
+
     return () => {
+      poolRef.current = null;
+
       for (const controller of controllers.current.values()) {
         controller.abort();
       }
@@ -46,7 +51,7 @@ export function useImageWorkspace() {
 
       pool.terminate();
     };
-  }, [pool]);
+  }, []);
 
   const addFiles = useCallback((files: readonly File[]) => {
     const partition = partitionImageFiles(files);
@@ -106,6 +111,9 @@ export function useImageWorkspace() {
     async (id: string): Promise<ConversionResult | undefined> => {
       const item = stateRef.current.items.find((candidate) => candidate.id === id);
       if (!item || item.status === 'converting') return undefined;
+
+      const pool = poolRef.current;
+      if (!pool) return undefined;
 
       const controller = new AbortController();
       controllers.current.set(id, controller);
@@ -175,7 +183,7 @@ export function useImageWorkspace() {
 
       return undefined;
     },
-    [pool],
+    [],
   );
 
   const convertAll = useCallback(async () => {
