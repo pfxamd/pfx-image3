@@ -1,11 +1,12 @@
 import { defaultCodecRegistry, type CodecRegistry } from './codecs/registry.js';
 import {
   DEFAULT_MEMORY_BUDGET_BYTES,
-  estimateWorkingSetBytes,
   recommendedWorkerCount,
 } from './memory/estimator.js';
+import { estimateInputWorkingSet } from './memory/preflight.js';
 import { convertInline } from './pipeline/convert.js';
 import { WeightedScheduler } from './queue/scheduler.js';
+import { withRetry, type RetryOptions } from './retry/retry.js';
 import type {
   BatchConvertRequest,
   ConvertRequest,
@@ -37,14 +38,11 @@ export class Image3Core {
     });
   }
 
-  convert(request: ConvertRequest): Promise<ConversionResult> {
-    const inputBytes =
-      request.input.data instanceof ArrayBuffer
-        ? request.input.data.byteLength
-        : request.input.data.size;
+  async convert(request: ConvertRequest): Promise<ConversionResult> {
+    const weightBytes = await estimateInputWorkingSet(request.input);
 
     return this.scheduler.enqueue(
-      estimateWorkingSetBytes({ inputBytes }),
+      weightBytes,
       () =>
         convertInline({
           input: request.input,
@@ -55,6 +53,13 @@ export class Image3Core {
         }),
       request.signal,
     );
+  }
+
+  convertWithRetry(
+    request: ConvertRequest,
+    retryOptions: RetryOptions = {},
+  ): Promise<ConversionResult> {
+    return withRetry(() => this.convert(request), retryOptions);
   }
 
   async convertBatch(
