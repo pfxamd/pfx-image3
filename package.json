@@ -4,6 +4,17 @@
   "private": true,
   "type": "module",
   "description": "Browser-first image conversion core for JPEG, PNG and WebP.",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
   "engines": {
     "node": ">=22"
   },
@@ -12,6 +23,7 @@
     "build": "tsc -p tsconfig.build.json",
     "test": "vitest run",
     "test:watch": "vitest",
+    "check": "npm run typecheck && npm test && npm run build",
     "dev:browser": "vite --host 127.0.0.1 --port 4173 --strictPort",
     "test:browser": "playwright test"
   },
