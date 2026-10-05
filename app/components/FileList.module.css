@@ -1,33 +1,41 @@
 .section {
   display: grid;
   gap: 10px;
+  padding-top: 4px;
 }
 
 .header {
+  min-height: 28px;
   display: flex;
   align-items: center;
-  gap: 9px;
-  padding: 2px 4px;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 4px;
 }
 
 .header h2 {
   margin: 0;
-  font-size: 13px;
-  font-weight: 620;
+  color: var(--text-soft);
+  font-size: 10px;
+  font-weight: 720;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
 }
 
 .header span {
-  min-width: 22px;
-  height: 22px;
+  min-width: 23px;
+  height: 23px;
   display: grid;
   place-items: center;
+  border: 1px solid var(--line);
   border-radius: 999px;
-  background: #202326;
-  color: #8e9396;
-  font-size: 11px;
+  background: var(--surface-1);
+  color: var(--text-muted);
+  font-size: 9px;
+  font-weight: 700;
 }
 
 .list {
   display: grid;
-  gap: 8px;
+  gap: 7px;
 }
