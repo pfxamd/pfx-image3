@@ -55,6 +55,6 @@ test('app uploads and converts an image through the worker core', async ({ page 
   await page.getByRole('button', { name: 'Convert all' }).click();
 
   await expect(page.getByText('Done')).toBeVisible({ timeout: 60_000 });
-  await expect(page.getByRole('button', { name: 'Download' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Download', exact: true })).toBeVisible();
   expect(pageErrors).toEqual([]);
 });
