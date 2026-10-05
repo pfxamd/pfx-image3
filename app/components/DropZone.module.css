@@ -1,0 +1,109 @@
+.wrapper {
+  width: 100%;
+}
+
+.dropZone {
+  min-height: 210px;
+  border: 1px dashed #3b3e41;
+  border-radius: 22px;
+  background: rgba(24, 26, 28, 0.72);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 24px;
+  padding: 34px;
+  transition:
+    border-color 160ms ease,
+    background 160ms ease,
+    transform 160ms ease;
+}
+
+.dropZone.dragging {
+  border-color: #d9dcde;
+  background: #1b1d1f;
+  transform: translateY(-2px);
+}
+
+.dropZone.compact {
+  min-height: 0;
+  width: auto;
+  min-width: 250px;
+  padding: 12px 12px 12px 16px;
+  border-style: solid;
+  border-radius: 14px;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.copy {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.copy strong {
+  font-size: 17px;
+  font-weight: 590;
+  letter-spacing: -0.02em;
+}
+
+.compact .copy strong {
+  font-size: 13px;
+}
+
+.copy span {
+  color: #858a8e;
+  font-size: 13px;
+}
+
+.browseButton {
+  min-height: 42px;
+  padding: 0 16px;
+  border: 1px solid #3b3e41;
+  border-radius: 12px;
+  background: #f3f4f4;
+  color: #141516;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.browseButton:hover {
+  background: #ffffff;
+}
+
+.message {
+  margin: 10px 4px 0;
+  color: #c5a98b;
+  font-size: 12px;
+}
+
+@media (max-width: 720px) {
+  .dropZone,
+  .dropZone.compact {
+    width: 100%;
+    min-width: 0;
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .dropZone {
+    min-height: 190px;
+    padding: 24px;
+  }
+
+  .dropZone.compact {
+    padding: 14px;
+  }
+
+  .browseButton {
+    width: 100%;
+  }
+}
