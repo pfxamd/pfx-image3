@@ -5,7 +5,7 @@ export type ImageMimeType = 'image/jpeg' | 'image/png' | 'image/webp';
 export type RGB = readonly [red: number, green: number, blue: number];
 
 export interface RawImage {
-  readonly data: Uint8ClampedArray;
+  readonly data: Uint8ClampedArray<ArrayBuffer>;
   readonly width: number;
   readonly height: number;
 }
