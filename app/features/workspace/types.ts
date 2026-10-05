@@ -17,10 +17,10 @@ export interface WorkspaceItem {
   readonly file: File;
   readonly previewUrl: string;
   readonly status: WorkspaceItemStatus;
-  readonly stage?: ConversionStage;
+  readonly stage: ConversionStage | undefined;
   readonly progress: number;
-  readonly result?: ConversionResult;
-  readonly error?: string;
+  readonly result: ConversionResult | undefined;
+  readonly error: string | undefined;
 }
 
 export interface WorkspaceSettings {
