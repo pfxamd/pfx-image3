@@ -20,6 +20,7 @@ test('edge cases, cancellation, retry, stress and benchmark pass', async ({ page
   expect(report.corrupted).toEqual(['UNSUPPORTED_FORMAT', 'DECODE_FAILED']);
   expect(report.cancelled).toBe(true);
   expect(report.retryAttempts).toBe(2);
+  expect(report.workerRecovery).toBe(true);
   expect(report.stress.items).toBe(6);
   expect(report.stress.width).toBe(1280);
   expect(report.stress.height).toBe(960);
