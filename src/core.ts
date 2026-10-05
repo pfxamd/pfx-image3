@@ -10,8 +10,10 @@ import { WeightedScheduler } from './queue/scheduler.js';
 import { withRetry, type RetryOptions } from './retry/retry.js';
 import type {
   BatchConvertRequest,
+  CodecCapabilities,
   ConvertRequest,
   ConversionResult,
+  ImageFormat,
 } from './types/core.js';
 
 export interface Image3CoreOptions {
@@ -92,11 +94,11 @@ export class Image3Core {
     this.scheduler.resume();
   }
 
-  getCapabilities() {
+  getCapabilities(): readonly CodecCapabilities[] {
     return this.registry.getCapabilities();
   }
 
-  getSupportedFormats() {
+  getSupportedFormats(): readonly ImageFormat[] {
     return this.registry.getSupportedFormats();
   }
 }
