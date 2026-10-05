@@ -50,6 +50,7 @@ export function DropZone({
   return (
     <div className={styles.wrapper}>
       <div
+        data-testid="drop-zone"
         className={[
           styles.dropZone,
           compact ? styles.compact : '',
