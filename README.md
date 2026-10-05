@@ -2,7 +2,7 @@
 
 Browser-first image conversion core for **JPG, PNG and WEBP**.
 
-`Core v0.1` is focused only on the conversion engine. The application UI is intentionally separate.
+`Core v0.1` is frozen as the conversion engine. The browser application lives in a separate `app/` layer and consumes the public core API.
 
 ## Core v0.1
 
@@ -92,9 +92,28 @@ npm run check
 npm run test:browser
 ```
 
+## Application foundation
+
+The current `app/` layer provides:
+
+- React workspace shell
+- drag and drop plus file picker
+- multi-image file list
+- JPG / PNG / WebP output controls
+- quality and compression controls
+- worker-backed conversion
+- per-file and batch progress
+- cancel and retry
+- individual and batch download actions
+- responsive structural layout
+- isolated app TypeScript and unit tests
+- Chromium and Firefox UI integration coverage
+
+Visual design is intentionally still at the structural foundation stage.
+
 ## Scope
 
-The next phase can consume this core to build the PFx Image3 GitHub Pages interface without coupling UI code to codec or scheduling internals.
+The next phase is the advanced PFx Image Studio visual system and interaction polish, followed by GitHub Pages deployment.
 
 ## License
 
