@@ -25,19 +25,30 @@
     "test:watch": "vitest",
     "check": "npm run typecheck && npm test && npm run build",
     "dev:browser": "vite --host 127.0.0.1 --port 4173 --strictPort",
-    "test:browser": "playwright test"
+    "test:browser": "playwright test",
+    "dev": "vite --host 127.0.0.1 --port 5173",
+    "typecheck:app": "tsc -p tsconfig.app.json --noEmit",
+    "test:app": "vitest run --config vitest.app.config.ts",
+    "build:app": "vite build",
+    "check:app": "npm run typecheck:app && npm run test:app && npm run build:app"
   },
   "dependencies": {
     "@jsquash/jpeg": "1.6.0",
     "@jsquash/oxipng": "2.3.0",
     "@jsquash/png": "3.1.1",
-    "@jsquash/webp": "1.5.0"
+    "@jsquash/webp": "1.5.0",
+    "motion": "13.5.0",
+    "react": "19.3.0",
+    "react-dom": "19.3.0"
   },
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "typescript": "7.0.2",
     "vite": "8.3.2",
-    "vitest": "5.0.3"
+    "vitest": "5.0.3",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.1.1"
   },
   "author": "PFxamd",
   "license": "Apache-2.0"
