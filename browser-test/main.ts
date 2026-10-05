@@ -1,11 +1,11 @@
 import {
   Image3Core,
   Image3WorkerPool,
-  convertInline,
-  detectImageFormat,
   type ConversionOptions,
   type ImageFormat,
 } from '../src/index.ts';
+import { convertInline } from '../src/pipeline/convert.ts';
+import { detectImageFormat } from '../src/pipeline/detect-format.ts';
 
 type BrowserSuiteReport = {
   readonly matrix: readonly string[];
