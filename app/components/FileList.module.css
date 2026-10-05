@@ -1,0 +1,33 @@
+.section {
+  display: grid;
+  gap: 10px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 2px 4px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 13px;
+  font-weight: 620;
+}
+
+.header span {
+  min-width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #202326;
+  color: #8e9396;
+  font-size: 11px;
+}
+
+.list {
+  display: grid;
+  gap: 8px;
+}
