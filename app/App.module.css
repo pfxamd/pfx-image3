@@ -21,50 +21,48 @@
 }
 
 .mark {
-  position: relative;
   width: 36px;
   height: 36px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 36px;
+}
+
+.mark img {
+  width: 34px;
+  height: 34px;
   display: block;
-  border: 1px solid var(--line-strong);
-  border-radius: 12px;
-  background:
-    linear-gradient(145deg, rgba(255, 255, 255, 0.05), transparent),
-    var(--surface-1);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
-}
-
-.mark span:first-child,
-.mark span:last-child {
-  position: absolute;
-  display: block;
-  background: var(--text);
-  border-radius: 999px;
-}
-
-.mark span:first-child {
-  width: 12px;
-  height: 2px;
-  left: 9px;
-  top: 11px;
-  transform: rotate(90deg);
-}
-
-.mark span:last-child {
-  width: 12px;
-  height: 2px;
-  left: 14px;
-  top: 21px;
+  object-fit: contain;
 }
 
 .brandCopy {
   display: grid;
-  gap: 1px;
+  gap: 2px;
+}
+
+.brandTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .brandCopy strong {
   font-size: 13px;
   font-weight: 680;
   letter-spacing: -0.015em;
+}
+
+.betaBadge {
+  padding: 4px 7px;
+  border: 1px solid rgba(245, 183, 68, 0.45);
+  border-radius: 999px;
+  background: rgba(245, 183, 68, 0.12);
+  color: #f5b744;
+  font-size: 9px;
+  font-weight: 760;
+  line-height: 1;
+  letter-spacing: 0.035em;
+  white-space: nowrap;
 }
 
 .brandCopy small {
