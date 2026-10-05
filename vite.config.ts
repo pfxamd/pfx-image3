@@ -4,6 +4,10 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   base: './',
   plugins: [react()],
+  build: {
+    outDir: 'site-dist',
+    emptyOutDir: true,
+  },
   optimizeDeps: {
     exclude: [
       '@jsquash/jpeg',
