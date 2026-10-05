@@ -34,3 +34,12 @@ jobs:
 
       - name: Build core
         run: npm run build
+
+      - name: Typecheck app
+        run: npm run typecheck:app
+
+      - name: App unit tests
+        run: npm run test:app
+
+      - name: Build app
+        run: npm run build:app
