@@ -4,26 +4,13 @@ import { Image3CoreError, toCoreError } from '../errors/core-error.js';
 import { convertInline } from '../pipeline/convert.js';
 import type { WorkerRequest, WorkerResponse } from './protocol.js';
 
-const controllers = new Map<string, AbortController>();
 const scope = self as DedicatedWorkerGlobalScope;
 
 scope.addEventListener('message', (event: MessageEvent<WorkerRequest>) => {
-  const request = event.data;
-
-  if (request.type === 'cancel') {
-    controllers.get(request.jobId)?.abort();
-    return;
-  }
-
-  void runConversion(request);
+  void runConversion(event.data);
 });
 
-async function runConversion(
-  request: Extract<WorkerRequest, { type: 'convert' }>,
-): Promise<void> {
-  const controller = new AbortController();
-  controllers.set(request.jobId, controller);
-
+async function runConversion(request: WorkerRequest): Promise<void> {
   try {
     const result = await convertInline({
       input: {
@@ -32,7 +19,6 @@ async function runConversion(
         ...(request.mimeType ? { mimeType: request.mimeType } : {}),
       },
       options: request.options,
-      signal: controller.signal,
       onProgress: (progress) => {
         post({ type: 'progress', jobId: request.jobId, progress });
       },
@@ -53,8 +39,6 @@ async function runConversion(
       jobId: request.jobId,
       error: { code: coreError.code, message: coreError.message },
     });
-  } finally {
-    controllers.delete(request.jobId);
   }
 }
 
