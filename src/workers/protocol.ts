@@ -14,12 +14,7 @@ export interface WorkerConvertRequest {
   readonly options: ConversionOptions;
 }
 
-export interface WorkerCancelRequest {
-  readonly type: 'cancel';
-  readonly jobId: string;
-}
-
-export type WorkerRequest = WorkerConvertRequest | WorkerCancelRequest;
+export type WorkerRequest = WorkerConvertRequest;
 
 export interface WorkerProgressResponse {
   readonly type: 'progress';
