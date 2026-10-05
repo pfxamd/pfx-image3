@@ -1,4 +1,5 @@
 import { defaultCodecRegistry, type CodecRegistry } from './codecs/registry.js';
+import { throwIfAborted } from './errors/core-error.js';
 import {
   DEFAULT_MEMORY_BUDGET_BYTES,
   recommendedWorkerCount,
@@ -39,7 +40,9 @@ export class Image3Core {
   }
 
   async convert(request: ConvertRequest): Promise<ConversionResult> {
+    throwIfAborted(request.signal);
     const weightBytes = await estimateInputWorkingSet(request.input);
+    throwIfAborted(request.signal);
 
     return this.scheduler.enqueue(
       weightBytes,
