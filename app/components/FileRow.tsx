@@ -1,3 +1,4 @@
+import { motion } from 'motion/react';
 import type { WorkspaceItem } from '../features/workspace/types.js';
 import { formatBytes, formatSavings } from '../lib/format.js';
 import styles from './FileRow.module.css';
@@ -21,59 +22,88 @@ export function FileRow({
 }: FileRowProps) {
   const isActive = item.status === 'converting';
   const result = item.result;
+  const sourceFormat = fileFormat(item.file);
 
   return (
-    <article className={styles.row}>
-      <img
-        className={styles.preview}
-        src={item.previewUrl}
-        alt=""
-        draggable={false}
-      />
+    <motion.article
+      className={styles.row}
+      layout
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className={styles.previewWrap}>
+        <img
+          className={styles.preview}
+          src={item.previewUrl}
+          alt=""
+          draggable={false}
+        />
+        <span className={styles.formatBadge}>{sourceFormat}</span>
+      </div>
 
       <div className={styles.identity}>
         <strong title={item.file.name}>{item.file.name}</strong>
-        <span>
-          {formatBytes(item.file.size)}
-          {result ? ` → ${formatBytes(result.outputBytes)}` : ''}
-        </span>
+        <div className={styles.fileMeta}>
+          <span>{formatBytes(item.file.size)}</span>
+          {result && (
+            <>
+              <i />
+              <span>{result.width}×{result.height}</span>
+            </>
+          )}
+        </div>
       </div>
 
       <div className={styles.status}>
         {isActive ? (
           <>
-            <div className={styles.progressTrack} aria-hidden="true">
+            <div className={styles.statusTop}>
+              <strong>{stageLabel(item.stage)}</strong>
+              <span>{Math.round(item.progress * 100)}%</span>
+            </div>
+            <div
+              className={styles.progressTrack}
+              role="progressbar"
+              aria-label={`Converting ${item.file.name}`}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(item.progress * 100)}
+            >
               <span
                 className={styles.progressValue}
                 style={{ width: `${Math.round(item.progress * 100)}%` }}
               />
             </div>
-            <span>
-              {stageLabel(item.stage)} · {Math.round(item.progress * 100)}%
-            </span>
           </>
         ) : result ? (
           <>
-            <strong className={styles.success}>Done</strong>
-            <span>
-              {result.extension.toUpperCase()} ·{' '}
-              {formatSavings(result.inputBytes, result.outputBytes)}
-            </span>
+            <div className={styles.statusTop}>
+              <strong className={styles.success}>Done</strong>
+              <span className={styles.outputFormat}>
+                {result.extension.toUpperCase()}
+              </span>
+            </div>
+            <div className={styles.resultMeta}>
+              <span>{formatBytes(result.outputBytes)}</span>
+              <i />
+              <span>{formatSavings(result.inputBytes, result.outputBytes)}</span>
+            </div>
           </>
         ) : item.status === 'error' ? (
           <>
             <strong className={styles.error}>Failed</strong>
-            <span>{item.error}</span>
+            <span className={styles.statusCopy}>{item.error}</span>
           </>
         ) : item.status === 'cancelled' ? (
           <>
             <strong>Cancelled</strong>
-            <span>Ready to retry</span>
+            <span className={styles.statusCopy}>Ready to retry</span>
           </>
         ) : (
           <>
             <strong>Ready</strong>
-            <span>Waiting for conversion</span>
+            <span className={styles.statusCopy}>Waiting for conversion</span>
           </>
         )}
       </div>
@@ -107,7 +137,7 @@ export function FileRow({
           Remove
         </button>
       </div>
-    </article>
+    </motion.article>
   );
 }
 
@@ -126,4 +156,10 @@ function stageLabel(stage: WorkspaceItem['stage']): string {
     default:
       return 'Working';
   }
+}
+
+function fileFormat(file: File): string {
+  const extension = file.name.split('.').pop()?.toUpperCase();
+  if (extension === 'JPEG') return 'JPG';
+  return extension ?? 'IMAGE';
 }
