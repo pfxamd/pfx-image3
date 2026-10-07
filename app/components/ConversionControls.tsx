@@ -143,7 +143,7 @@ export function ConversionControls({
           disabled={completedCount === 0 || activeCount > 0}
           onClick={onDownloadAll}
         >
-          Download all
+          Download ZIP
         </button>
 
         <button
