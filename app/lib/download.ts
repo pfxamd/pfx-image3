@@ -1,7 +1,8 @@
-import { createOutputBlob, type ConversionResult } from '../../src/index.js';
+import type { ConversionResult } from '../../src/index.js';
 
 export function downloadResult(result: ConversionResult): void {
-  const blob = createOutputBlob(result);
+  // Deliver the encoded bytes as a download rather than a previewable image.
+  const blob = new Blob([result.buffer], { type: 'application/octet-stream' });
   const url = URL.createObjectURL(blob);
   const anchor = document.createElement('a');
 
