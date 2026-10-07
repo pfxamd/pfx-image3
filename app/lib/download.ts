@@ -7,7 +7,8 @@ export function downloadResult(result: ConversionResult): void {
 
   anchor.href = url;
   anchor.download = result.outputName ?? `converted.${result.extension}`;
-  anchor.rel = 'noopener';
+  // Keep downloads in the current browsing context, including in Firefox.
+  anchor.target = '_self';
 
   document.body.append(anchor);
   anchor.click();
