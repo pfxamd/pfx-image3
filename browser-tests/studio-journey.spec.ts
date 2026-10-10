@@ -72,9 +72,12 @@ test('single-file upload, format conversion, comparison, image export and visual
 
   // Screenshot logs are decoded for manual visual review of the real Firefox UI.
   if (browserName === 'firefox') {
-    console.log('PFX_VISUAL_DARK:' + (await page.screenshot({ type: 'jpeg', quality: 48, animations: 'disabled' })).toString('base64'));
     const current = await page.locator('[data-theme]').getAttribute('data-theme');
-    if (current === 'dark') await page.getByRole('button', { name: 'Switch to light mode' }).click();
+    if (current === 'light') await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+    await expect(page.locator('[data-theme]')).toHaveAttribute('data-theme', 'dark');
+    console.log('PFX_VISUAL_DARK:' + (await page.screenshot({ type: 'jpeg', quality: 48, animations: 'disabled' })).toString('base64'));
+    await page.getByRole('button', { name: 'Switch to light mode' }).click();
+    await expect(page.locator('[data-theme]')).toHaveAttribute('data-theme', 'light');
     console.log('PFX_VISUAL_LIGHT:' + (await page.screenshot({ type: 'jpeg', quality: 48, animations: 'disabled' })).toString('base64'));
   }
   expect(errors).toEqual([]);
