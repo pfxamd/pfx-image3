@@ -101,8 +101,9 @@ export function useImageWorkspace() {
   }, []);
 
   const updateSettings = useCallback(
-    (patch: Partial<WorkspaceSettings>) => {
-      dispatch({ type: 'settings', patch });
+    (patch: Partial<WorkspaceSettings>, id?: string) => {
+      if (id) dispatch({ type: 'settings-item', id, patch });
+      else dispatch({ type: 'settings', patch });
     },
     [],
   );
@@ -119,7 +120,7 @@ export function useImageWorkspace() {
       controllers.current.set(id, controller);
       dispatch({ type: 'start', id });
 
-      const options = buildConversionOptions(stateRef.current.settings);
+      const options = buildConversionOptions(item.overrideSettings ?? stateRef.current.settings);
 
       try {
         let attempt = 0;
@@ -188,7 +189,7 @@ export function useImageWorkspace() {
 
   const convertAll = useCallback(async () => {
     const ids = stateRef.current.items
-      .filter((item) => item.status !== 'converting')
+      .filter((item) => item.status !== 'converting' && item.result === undefined)
       .map((item) => item.id);
 
     await Promise.allSettled(ids.map((id) => convertItem(id)));
