@@ -1,5 +1,12 @@
 # Changelog
 
+## Alpha 0.2.2 — 2026-10-11
+
+- Added drop-to-add across the preview while an image is already open.
+- Kept the image preview free of conversion prompts, docked output actions and improved focus and active states.
+- Updated the bottom status bar with image totals and conversion progress.
+- Added full browser journey tests for encoding, comparison, individual downloads, batch ZIP and image drop.
+
 ## Alpha 0.2.1 — 2026-10-11
 
 - Replaced separated dashboard cards with a connected, viewport-sized image workspace.
