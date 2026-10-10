@@ -19,7 +19,7 @@ function useOutputUrl(result: ConversionResult | undefined): string | undefined 
     setEntry({ result, url });
     return () => URL.revokeObjectURL(url);
   }, [result]);
-  return entry?.result === result ? entry.url : undefined;
+  return entry && entry.result === result ? entry.url : undefined;
 }
 
 export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
