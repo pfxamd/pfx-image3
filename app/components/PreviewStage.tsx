@@ -61,7 +61,7 @@ export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
   }
 
   function onStageDragOver(event: DragEvent<HTMLElement>) {
-    if (!event.dataTransfer.types.includes('Files')) return;
+    if (!selected || !event.dataTransfer.types.includes('Files')) return;
     event.preventDefault();
     event.dataTransfer.dropEffect = 'copy';
     if (!stageDragging) setStageDragging(true);
@@ -74,7 +74,7 @@ export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
   }
 
   function onStageDrop(event: DragEvent<HTMLElement>) {
-    if (!event.dataTransfer.types.includes('Files')) return;
+    if (!selected || !event.dataTransfer.types.includes('Files')) return;
     event.preventDefault();
     setStageDragging(false);
     onFiles(Array.from(event.dataTransfer.files));
