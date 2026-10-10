@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent } from 'react';
+import { useEffect, useRef, useState, type ChangeEvent } from 'react';
 import { FileRail } from './components/FileRail.js';
 import { PreviewStage } from './components/PreviewStage.js';
 import { ProcessingPanel, type SettingsScope } from './components/ProcessingPanel.js';
@@ -7,12 +7,37 @@ import logoUrl from './assets/Red-pfx.svg';
 import styles from './App.module.css';
 import { studioReleaseLabel } from './release.js';
 
+type StudioTheme = 'dark' | 'light';
+
+const THEME_KEY = 'pfx-image-studio.theme';
+
+function getInitialTheme(): StudioTheme {
+  if (typeof window === 'undefined') return 'dark';
+  try {
+    const saved = window.localStorage.getItem(THEME_KEY);
+    if (saved === 'light' || saved === 'dark') return saved;
+  } catch {
+    // Private browsing may disable storage.
+  }
+  return window.matchMedia?.('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+}
+
 export function App() {
   const workspace = useImageWorkspace();
   const { items, settings } = workspace.state;
   const [selectedId, setSelectedId] = useState<string>();
   const [scope, setScope] = useState<SettingsScope>('all');
   const [notice, setNotice] = useState('');
+  const [theme, setTheme] = useState<StudioTheme>(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.dataset.studioTheme = theme;
+    try {
+      window.localStorage.setItem(THEME_KEY, theme);
+    } catch {
+      // Theme still works for this session when storage is unavailable.
+    }
+  }, [theme]);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const selected = items.find((item) => item.id === selectedId) ?? items[0];
@@ -49,17 +74,34 @@ export function App() {
   }
 
   return (
-    <div className={styles.app}>
+    <div className={styles.app} data-theme={theme}>
       <header className={styles.appHeader}>
         <a href="./" className={styles.brand} aria-label="PFx Image Studio home">
           <img src={logoUrl} alt="" />
           <span className={styles.brandWords}>
-            <strong>PFx Image Studio</strong><small>IMAGE WORKSPACE</small>
+            <strong>PFx Image Studio</strong>
           </span>
           <span className={styles.version}>{studioReleaseLabel}</span>
         </a>
         <div className={styles.headerActions}>
-          <span className={styles.localStatus}><i /> Local processing</span>
+          <button
+            type="button"
+            className={styles.themeToggle}
+            aria-label={theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode'}
+            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+            onClick={() => setTheme((current) => current === 'dark' ? 'light' : 'dark')}
+          >
+            {theme === 'dark' ? (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" />
+              </svg>
+            ) : (
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M20.7 13.2A9 9 0 0 1 10.8 3.3 9 9 0 1 0 20.7 13.2Z" />
+              </svg>
+            )}
+          </button>
           <button className={styles.headerAdd} type="button" onClick={() => inputRef.current?.click()}>
             <span aria-hidden="true">＋</span> Add images
           </button>
@@ -89,7 +131,7 @@ export function App() {
           />
         </div>
         <footer className={styles.appFooter}>
-          <span>PFx Image Studio</span><span>Your images are not uploaded.</span>
+          <span>{items.length} {items.length === 1 ? 'image' : 'images'} in workspace</span><span>Processed locally · No uploads</span>
         </footer>
       </main>
     </div>
