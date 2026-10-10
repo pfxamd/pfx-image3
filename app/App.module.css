@@ -811,3 +811,69 @@
   .workspaceGrid { grid-template-rows: minmax(0,1fr) 66px minmax(140px,38vh); }
   .railHeader { display: none; }
 }
+
+
+/* Alpha 0.2.2: interaction and visual finish. */
+.previewStage { position: relative; }
+.stageDropOverlay {
+  position: absolute;
+  inset: 43px 0 31px;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: var(--studio-overlay);
+  color: var(--studio-text);
+  border: 2px dashed var(--studio-blue);
+  box-shadow: inset 0 0 0 6px var(--studio-stage);
+  pointer-events: none;
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: .005em;
+}
+.inspectorHead {
+  position: sticky;
+  top: 0;
+  z-index: 4;
+  background: var(--studio-inspector);
+}
+.inspectorActions {
+  position: sticky;
+  bottom: 0;
+  z-index: 3;
+  border-top: 1px solid var(--studio-line);
+  box-shadow: 0 -9px 24px -17px rgba(0, 0, 0, .38);
+}
+.app[data-theme="light"] .inspectorActions {
+  box-shadow: 0 -8px 20px -18px rgba(0, 0, 0, .2);
+}
+.inspector :is(.formatButton, .formatActive, .pill, .pillActive, .mainAction, .secondaryAction, .exportActions button),
+.fileRail .fileItem,
+.previewStage :is(.tab, .tabActive, .zoomTools button) {
+  transition: background-color 130ms ease, border-color 130ms ease, color 130ms ease;
+}
+.inspector :is(button, input):focus-visible,
+.previewStage button:focus-visible,
+.fileRail button:focus-visible {
+  outline: 2px solid var(--studio-blue);
+  outline-offset: 1px;
+}
+.inspectorActions button:not(:disabled):active,
+.headerAdd:active {
+  transform: translateY(1px);
+}
+.previewCanvas:focus-within { outline: 1px solid var(--studio-blue); outline-offset: -1px; }
+.previewHead h1, .previewFilename, .fileTitle { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.previewHead h1 { max-width: 48%; }
+.previewHead > div { min-width: 0; }
+.fileSelected .fileTitle { color: var(--studio-text); }
+.inspectorActions .bottomActions { gap: 8px; }
+.inspectorActions .bottomActions button { min-height: 27px; }
+.appFooter [role="status"] { text-align: right; font-variant-numeric: tabular-nums; }
+@media (max-width: 720px) {
+  .stageDropOverlay { inset: 35px 0 25px; }
+  .previewHead h1 { max-width: 100%; }
+  .inspectorActions { box-shadow: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .inspector :is(button,input), .fileRail button, .previewStage button { transition: none; }
+}
