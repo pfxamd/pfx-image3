@@ -42,15 +42,17 @@ test('single-file upload, format conversion, comparison, image export and visual
   await addFiles(page, [{ name: 'test-artwork.png', buffer: await createArtwork(page) }]);
   await expect(page.getByRole('img', { name: 'Original: test-artwork.png' })).toBeVisible();
 
-  for (const [format, extension] of [['WebP', '.webp'], ['PNG', '.png'], ['JPG', '.jpg']] as const) {
+  for (const [format, extension] of [['WEBP', '.webp'], ['PNG', '.png'], ['JPG', '.jpg']] as const) {
     await page.getByRole('button', { name: format, exact: true }).click();
     await page.getByRole('button', { name: /^(Convert image|Reprocess image)/ }).click();
     await expect(page.getByRole('button', { name: 'Download image' })).toBeEnabled({ timeout: 60_000 });
     await page.getByRole('button', { name: 'Compare', exact: true }).click();
     const slider = page.getByRole('slider', { name: 'Compare original and processed images' });
     await expect(slider).toBeVisible();
-    await slider.fill('30');
-    await expect(slider).toHaveValue('30');
+    await slider.focus();
+    await slider.press('Home');
+    await slider.press('ArrowRight');
+    await expect(slider).toHaveValue('1');
     const downloadPromise = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download image' }).click();
     const download = await downloadPromise;
