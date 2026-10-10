@@ -46,14 +46,14 @@
 
 .dropZone.compact {
   min-height: 0;
-  width: auto;
-  min-width: 236px;
+  width: 100%;
+  min-width: 0;
   overflow: visible;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto;
   align-items: center;
-  gap: 16px;
-  padding: 10px 10px 10px 15px;
+  gap: 8px;
+  padding: 8px;
   border-radius: 14px;
   background: var(--surface-1);
   box-shadow: none;
@@ -173,7 +173,7 @@
 }
 
 .compact .copy strong {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 620;
 }
 
@@ -199,8 +199,8 @@
 }
 
 .compact .browseButton {
-  min-height: 36px;
-  padding-inline: 12px;
+  min-height: 34px;
+  padding-inline: 10px;
   background: var(--surface-3);
   color: var(--text);
 }
@@ -260,4 +260,12 @@
   .dropZone.compact .browseButton {
     width: auto;
   }
+}
+
+/* Keep the file-rail picker usable at desktop sidebar widths. */
+.compact .copy { min-width: 0; }
+.compact .browseButton { flex: 0 0 auto; }
+@media (min-width: 721px) {
+  .dropZone.compact .copy strong { font-size: 11px; }
+  .dropZone.compact { grid-template-columns: minmax(0, 1fr) auto; }
 }

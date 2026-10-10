@@ -6,7 +6,7 @@ import './styles/global.css';
 const root = document.getElementById('root');
 
 if (!root) {
-  throw new Error('PFx Image3 root element is missing.');
+  throw new Error('PFx Image Studio root element is missing.');
 }
 
 createRoot(root).render(

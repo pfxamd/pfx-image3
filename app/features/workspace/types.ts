@@ -20,6 +20,7 @@ export interface WorkspaceItem {
   readonly stage: ConversionStage | undefined;
   readonly progress: number;
   readonly result: ConversionResult | undefined;
+  readonly overrideSettings?: WorkspaceSettings | undefined;
   readonly error: string | undefined;
 }
 
@@ -39,6 +40,7 @@ export interface WorkspaceState {
 export type WorkspaceAction =
   | { readonly type: 'add'; readonly items: readonly WorkspaceItem[] }
   | { readonly type: 'remove'; readonly id: string }
+  | { readonly type: 'settings-item'; readonly id: string; readonly patch: Partial<WorkspaceSettings> }
   | { readonly type: 'clear' }
   | {
       readonly type: 'settings';

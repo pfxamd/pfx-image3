@@ -25,5 +25,5 @@ function downloadBlob(blob: Blob, filename: string): void {
 
 export function downloadResults(results: readonly ConversionResult[]): void {
   if (results.length === 0) return;
-  downloadBlob(createDownloadArchive(results), 'pfx-image3-images.zip');
+  downloadBlob(createDownloadArchive(results), 'pfx-image-studio-images.zip');
 }

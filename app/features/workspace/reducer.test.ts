@@ -1,83 +1,64 @@
 import { describe, expect, it } from 'vitest';
 import { workspaceReducer } from './reducer.js';
-import {
-  initialWorkspaceState,
-  type WorkspaceItem,
-} from './types.js';
+import { initialWorkspaceState, type WorkspaceItem } from './types.js';
 
-function makeItem(): WorkspaceItem {
+function makeItem(id = 'image-1'): WorkspaceItem {
   return {
-    id: 'image-1',
-    file: {} as File,
-    previewUrl: 'blob:test',
-    status: 'ready',
-    stage: undefined,
-    progress: 0,
-    result: undefined,
-    error: undefined,
+    id, file: {} as File, previewUrl: 'blob:test',
+    status: 'ready', stage: undefined, progress: 0,
+    result: undefined, error: undefined,
+  };
+}
+
+function completedItem(id: string): WorkspaceItem {
+  return {
+    ...makeItem(id), status: 'completed', progress: 1, stage: 'completed',
+    result: {
+      buffer: new ArrayBuffer(1),
+      sourceFormat: 'png', targetFormat: 'webp',
+      mimeType: 'image/webp', extension: 'webp',
+      width: 1, height: 1, inputBytes: 10, outputBytes: 8,
+    },
   };
 }
 
 describe('workspaceReducer', () => {
   it('tracks conversion progress and completion', () => {
     const withItem = workspaceReducer(initialWorkspaceState, {
-      type: 'add',
-      items: [makeItem()],
+      type: 'add', items: [makeItem()],
     });
-
-    const started = workspaceReducer(withItem, {
-      type: 'start',
-      id: 'image-1',
-    });
-
+    const started = workspaceReducer(withItem, { type: 'start', id: 'image-1' });
     const progressed = workspaceReducer(started, {
-      type: 'progress',
-      id: 'image-1',
-      progress: 0.7,
-      stage: 'encoding',
+      type: 'progress', id: 'image-1', progress: 0.7, stage: 'encoding',
     });
-
     expect(progressed.items[0]).toMatchObject({
-      status: 'converting',
-      progress: 0.7,
-      stage: 'encoding',
+      status: 'converting', progress: 0.7, stage: 'encoding',
     });
   });
 
-  it('invalidates old results when output settings change', () => {
-    const item: WorkspaceItem = {
-      ...makeItem(),
-      status: 'completed',
-      progress: 1,
-      stage: 'completed',
-      result: {
-        buffer: new ArrayBuffer(1),
-        sourceFormat: 'png',
-        targetFormat: 'webp',
-        mimeType: 'image/webp',
-        extension: 'webp',
-        width: 1,
-        height: 1,
-        inputBytes: 10,
-        outputBytes: 8,
-      },
-    };
-
-    const state = {
-      ...initialWorkspaceState,
-      items: [item],
-    };
-
-    const next = workspaceReducer(state, {
-      type: 'settings',
-      patch: { format: 'jpeg' },
-    });
-
+  it('invalidates all output on shared settings change', () => {
+    const state = { ...initialWorkspaceState, items: [completedItem('a'), completedItem('b')] };
+    const next = workspaceReducer(state, { type: 'settings', patch: { format: 'jpeg' } });
     expect(next.settings.format).toBe('jpeg');
-    expect(next.items[0]).toMatchObject({
-      status: 'ready',
-      progress: 0,
-      result: undefined,
+    expect(next.items.every((item) => item.result === undefined && item.status === 'ready')).toBe(true);
+  });
+
+  it('keeps unrelated converted results when editing selected image settings', () => {
+    const state = { ...initialWorkspaceState, items: [completedItem('a'), completedItem('b')] };
+    const next = workspaceReducer(state, {
+      type: 'settings-item', id: 'a', patch: { format: 'jpeg', quality: 76 },
     });
+    expect(next.items[0]?.result).toBeUndefined();
+    expect(next.items[0]?.overrideSettings?.format).toBe('jpeg');
+    expect(next.items[0]?.overrideSettings?.quality).toBe(76);
+    expect(next.items[1]?.result).toBe(state.items[1]?.result);
+    expect(next.settings.format).toBe('webp');
+  });
+
+  it('clears per-item overrides when the global settings change', () => {
+    const overridden = { ...makeItem(), overrideSettings: { ...initialWorkspaceState.settings, format: 'jpeg' as const } };
+    const state = { ...initialWorkspaceState, items: [overridden] };
+    const next = workspaceReducer(state, { type: 'settings', patch: { quality: 50 } });
+    expect(next.items[0]?.overrideSettings).toBeUndefined();
   });
 });
