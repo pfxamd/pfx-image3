@@ -1,5 +1,11 @@
 # Changelog
 
+## Alpha 0.2 — 2026-10-10
+
+- Updated the workspace badge to Alpha 0.2.
+- Added a single application release source and an automatic version-increment check before deployment.
+- Kept the conversion core version independent.
+
 ## Unreleased
 
 - Rebranded the browser application as PFx Image Studio.
