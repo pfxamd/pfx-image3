@@ -131,7 +131,10 @@ export function App() {
           />
         </div>
         <footer className={styles.appFooter}>
-          <span>{items.length} {items.length === 1 ? 'image' : 'images'} in workspace</span><span>Processed locally · No uploads</span>
+          <span>{items.length} {items.length === 1 ? 'image' : 'images'} · {completedCount} converted</span>
+          <span role="status" aria-live="polite">{activeCount > 0
+            ? `${activeCount} processing`
+            : selected?.status === 'error' ? 'Conversion failed' : selected?.result ? 'Output ready' : 'Ready'}</span>
         </footer>
       </main>
     </div>
