@@ -1,4 +1,4 @@
-# PFx Image3
+# PFx Image Studio
 
 Live app: https://pfxamd.github.io/pfx-image3/
 
@@ -115,10 +115,10 @@ Visual design is intentionally still at the structural foundation stage.
 
 ## Scope
 
-The next phase is the advanced PFx Image Studio visual system and interaction polish, followed by GitHub Pages deployment.
+PFx Image Studio currently focuses on JPG, PNG and WebP conversion. Image resizing, cropping, comparison and export presets are future directions, not existing features. The stable `Image3` core API remains unchanged for compatibility.
 
 ## License
 
 Copyright 2026 PFxamd.
 
-PFx Image3 is licensed under Apache-2.0. Third-party codec notices are documented in `THIRD_PARTY_NOTICES.md`.
+PFx Image Studio is licensed under Apache-2.0. Third-party codec notices are documented in `THIRD_PARTY_NOTICES.md`.

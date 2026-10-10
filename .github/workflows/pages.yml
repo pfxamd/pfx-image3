@@ -1,4 +1,4 @@
-name: Deploy PFx Image3
+name: Deploy PFx Image Studio
 
 on:
   push:

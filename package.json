@@ -1,9 +1,9 @@
 {
-  "name": "pfx-image3",
+  "name": "pfx-image-studio",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Browser-first image conversion core for JPEG, PNG and WebP.",
+  "description": "Local-first image studio for JPG, PNG and WebP conversion.",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {

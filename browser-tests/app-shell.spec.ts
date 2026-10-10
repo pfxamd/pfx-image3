@@ -6,6 +6,9 @@ test('app uploads and converts an image through the worker core', async ({ page 
 
   await page.goto('/');
 
+  await expect(page).toHaveTitle('PFx Image Studio');
+  await expect(page.getByRole('link', { name: 'PFx Image Studio home' })).toBeVisible();
+
   await expect(
     page.getByRole('heading', { name: 'Convert images in your browser.' }),
   ).toBeVisible();

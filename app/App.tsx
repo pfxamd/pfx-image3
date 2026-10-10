@@ -25,13 +25,13 @@ export function App() {
   return (
     <div className={styles.app}>
       <header className={styles.header}>
-        <a className={styles.brand} href="./" aria-label="PFx Image3 home">
+        <a className={styles.brand} href="./" aria-label="PFx Image Studio home">
           <span className={styles.mark} aria-hidden="true">
             <img src={logoUrl} alt="" />
           </span>
           <span className={styles.brandCopy}>
             <span className={styles.brandTitle}>
-              <strong>PFx Image3</strong>
+              <strong>PFx Image Studio</strong>
               <span className={styles.betaBadge}>Beta 0.1</span>
             </span>
             <small>Image converter</small>

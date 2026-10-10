@@ -1,5 +1,11 @@
 # Changelog
 
+## Unreleased
+
+- Rebranded the browser application as PFx Image Studio.
+- Preserved the existing Image3 core API and live Pages URL for compatibility.
+
+
 ## 0.1.0
 
 Initial PFx Image3 core.
