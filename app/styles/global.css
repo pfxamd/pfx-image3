@@ -93,3 +93,20 @@ img {
     transition-duration: 0.001ms !important;
   }
 }
+
+
+/* Only workspace regions scroll; the document itself is viewport-bound. */
+html, body, #root {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+:root[data-studio-theme="light"] {
+  color-scheme: light;
+  background: #f1f2f3;
+}
+:root[data-studio-theme="dark"] {
+  color-scheme: dark;
+  background: #111317;
+}
+body { background: transparent; }

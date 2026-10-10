@@ -269,3 +269,87 @@
   .dropZone.compact .copy strong { font-size: 11px; }
   .dropZone.compact { grid-template-columns: minmax(0, 1fr) auto; }
 }
+
+
+/* Integrated workstation file picker (inherits both theme palettes). */
+.dropZone {
+  min-height: 165px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  padding: 18px;
+  border: 1px dashed var(--line-strong);
+  border-radius: 9px;
+  background: var(--surface-1);
+  box-shadow: none;
+  text-align: center;
+}
+.dropZone::after { display: none; }
+.dropZone.dragging {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.dropVisual {
+  position: relative;
+  inset: auto;
+  width: 35px;
+  height: 35px;
+}
+.frame { inset: 0; transform: none; border-radius: 7px; background: var(--surface-2); }
+.frame::before { width: 14px; left: 5px; bottom: 8px; }
+.frame::after { width: 13px; left: 15px; bottom: 10px; }
+.frameDot { top: 7px; right: 7px; width: 5px; height: 5px; box-shadow: none; }
+.frameLine { display: none; }
+.plus { width: 15px; height: 15px; right: -6px; bottom: -3px; border: 0; border-radius: 4px; font-size: 12px; }
+.copy { gap: 5px; }
+.copy strong { font-size: 13px; font-weight: 660; }
+.copy span { font-size: 10px; color: var(--text-muted); }
+.browseButton {
+  min-height: 33px;
+  padding: 0 13px;
+  color: var(--bg);
+  background: var(--text);
+  border-color: transparent;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: 690;
+  transition: opacity .15s ease;
+}
+.browseButton:hover { background: var(--text); transform: none; opacity: .85; }
+.dropZone.compact {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) auto;
+  min-height: 0;
+  padding: 5px;
+  gap: 4px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface-2);
+  box-shadow: none;
+  text-align: left;
+}
+.compact .copy strong { font-size: 10px; }
+.compact .browseButton {
+  min-height: 28px;
+  padding: 0 7px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface-1);
+  color: var(--text);
+  border-radius: 5px;
+  font-size: 10px;
+}
+.compact .browseButton:hover { background: var(--surface-3); opacity: 1; }
+.message { color: var(--accent); }
+@media (max-width: 970px) {
+  .dropZone { min-height: 145px; }
+  .compact .copy { display: none; }
+  .dropZone.compact { grid-template-columns: 1fr; }
+  .compact .browseButton { width: 100%; }
+}
+@media (max-width: 720px) {
+  .dropZone { min-height: 125px; padding: 12px; gap: 8px; }
+  .dropVisual { display: none; }
+  .browseButton { width: auto; }
+}

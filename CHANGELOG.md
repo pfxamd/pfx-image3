@@ -1,5 +1,12 @@
 # Changelog
 
+## Alpha 0.2.1 — 2026-10-11
+
+- Replaced separated dashboard cards with a connected, viewport-sized image workspace.
+- Added a single light/dark appearance toggle, system preference fallback and saved selection.
+- Kept image conversion, image comparison and batch export on the existing core.
+- Moved overflow into file and settings regions instead of scrolling the desktop page.
+
 ## Alpha 0.2 — 2026-10-10
 
 - Updated the workspace badge to Alpha 0.2.
