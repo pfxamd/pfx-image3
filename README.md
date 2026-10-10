@@ -1,6 +1,6 @@
 # PFx Image Studio
 
-Live app: https://pfxamd.github.io/pfx-image3/
+Live app: https://pfxamd.github.io/pfx-image-studio/
 
 Browser-first image conversion core for **JPG, PNG and WEBP**.
 
