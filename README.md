@@ -2,6 +2,8 @@
 
 Live app: https://pfxamd.github.io/pfx-image-studio/
 
+**App release:** Alpha 0.2. The browser interface release is independent of the frozen conversion core (`0.1.0`). The navbar badge reads from `app/release.ts`. Increase `studioVersion` with every change; CI and the Pages deployment workflow reject updates without a version increase.
+
 Browser-first image conversion core for **JPG, PNG and WEBP**.
 
 `Core v0.1` is frozen as the conversion engine. The browser application lives in a separate `app/` layer and consumes the public core API.

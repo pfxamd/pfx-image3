@@ -5,6 +5,7 @@ import { ProcessingPanel, type SettingsScope } from './components/ProcessingPane
 import { useImageWorkspace } from './features/workspace/useImageWorkspace.js';
 import logoUrl from './assets/Red-pfx.svg';
 import styles from './App.module.css';
+import { studioReleaseLabel } from './release.js';
 
 export function App() {
   const workspace = useImageWorkspace();
@@ -55,7 +56,7 @@ export function App() {
           <span className={styles.brandWords}>
             <strong>PFx Image Studio</strong><small>IMAGE WORKSPACE</small>
           </span>
-          <span className={styles.version}>Beta 0.1</span>
+          <span className={styles.version}>{studioReleaseLabel}</span>
         </a>
         <div className={styles.headerActions}>
           <span className={styles.localStatus}><i /> Local processing</span>
