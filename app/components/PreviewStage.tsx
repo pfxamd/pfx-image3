@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type PointerEvent } from 'react';
+import { useEffect, useRef, useState, type DragEvent, type PointerEvent } from 'react';
 import type { ConversionResult } from '../../src/index.js';
 import type { WorkspaceItem } from '../features/workspace/types.js';
 import { DropZone } from './DropZone.js';
@@ -30,6 +30,7 @@ export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
   const [zoom, setZoom] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [sourceSize, setSourceSize] = useState<{ w: number; h: number }>();
+  const [stageDragging, setStageDragging] = useState(false);
   const pointer = useRef<{ id: number; x: number; y: number; px: number; py: number } | null>(null);
 
   useEffect(() => {
@@ -59,6 +60,26 @@ export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
     }
   }
 
+  function onStageDragOver(event: DragEvent<HTMLElement>) {
+    if (!event.dataTransfer.types.includes('Files')) return;
+    event.preventDefault();
+    event.dataTransfer.dropEffect = 'copy';
+    if (!stageDragging) setStageDragging(true);
+  }
+
+  function onStageDragLeave(event: DragEvent<HTMLElement>) {
+    if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+      setStageDragging(false);
+    }
+  }
+
+  function onStageDrop(event: DragEvent<HTMLElement>) {
+    if (!event.dataTransfer.types.includes('Files')) return;
+    event.preventDefault();
+    setStageDragging(false);
+    onFiles(Array.from(event.dataTransfer.files));
+  }
+
   function changeZoom(next: number) {
     const clamped = Math.max(1, Math.min(3, Math.round(next * 4) / 4));
     setZoom(clamped);
@@ -70,7 +91,8 @@ export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
   const comparing = showProcessed && mode === 'compare';
 
   return (
-    <section className={styles.previewStage} aria-label="Image preview">
+    <section className={styles.previewStage} aria-label="Image preview"
+      onDragOver={onStageDragOver} onDragLeave={onStageDragLeave} onDrop={onStageDrop}>
       <div className={styles.previewHead}>
         <div>
           <span className={styles.eyebrow}>Workspace</span>
@@ -120,7 +142,6 @@ export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
                 <span className={styles.compareTagRight}>Original</span>
               </>
             )}
-            {!result && <span className={styles.previewNotice}>Convert to see the processed result</span>}
           </div>
           <div className={styles.previewFooter}>
             <span>{result ? String(result.width) + ' × ' + String(result.height) + ' px' :
@@ -139,6 +160,7 @@ export function PreviewStage({ selected, onFiles }: PreviewStageProps) {
           <div className={styles.emptyFeatures}><span>Local processing</span><span>Batch conversion</span><span>Quality controls</span></div>
         </div>
       )}
+      {stageDragging && <div className={styles.stageDropOverlay} role="status">Drop images to add</div>}
     </section>
   );
 }
