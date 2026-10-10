@@ -29,7 +29,7 @@ test('image workspace keeps the real conversion, preview, comparison and downloa
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
   await expect(page).toHaveTitle('PFx Image Studio');
-  await expect(page.getByText(/^Alpha \\d+\\.\\d+(?:\\.\\d+)?$/)).toBeVisible();
+  await expect(page.getByText(/^Alpha \d+\.\d+(?:\.\d+)?$/)).toBeVisible();
   await expect(page.getByRole('heading', { name: 'Your image workspace' })).toBeVisible();
   await addImages(page, 1);
   await expect(page.getByRole('heading', { name: 'Image preview' })).toBeVisible();

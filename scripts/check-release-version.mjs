@@ -10,7 +10,7 @@ const releasePath = 'app/release.ts';
 const extract = (source) => {
   const channel = source.match(/export const studioChannel = '([^']+)'/);
   const version = source.match(/export const studioVersion = '([^']+)'/);
-  if (!channel || !version || channel[1] !== 'Alpha' || !/^\\d+\\.\\d+(?:\\.\\d+)?$/.test(version[1])) {
+  if (!channel || !version || channel[1] !== 'Alpha' || !/^\d+\.\d+(?:\.\d+)?$/.test(version[1])) {
     throw new Error('Invalid application release. Expected Alpha and a numeric version (e.g. 0.2.1).');
   }
   return version[1];
