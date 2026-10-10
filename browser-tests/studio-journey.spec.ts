@@ -41,6 +41,9 @@ test('single-file upload, format conversion, comparison, image export and visual
   await page.goto('/');
   await addFiles(page, [{ name: 'test-artwork.png', buffer: await createArtwork(page) }]);
   await expect(page.getByRole('img', { name: 'Original: test-artwork.png' })).toBeVisible();
+  const title = page.getByRole('heading', { name: 'Image preview' });
+  await expect(title).toBeVisible();
+  expect(await title.evaluate((heading) => heading.scrollWidth <= heading.clientWidth)).toBeTruthy();
 
   for (const [format, extension] of [['WEBP', '.webp'], ['PNG', '.png'], ['JPG', '.jpg']] as const) {
     await page.getByRole('button', { name: format, exact: true }).click();
