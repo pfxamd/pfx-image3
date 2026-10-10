@@ -2,7 +2,7 @@
 
 Live app: https://pfxamd.github.io/pfx-image-studio/
 
-**App release:** Alpha 0.2. The browser interface release is independent of the frozen conversion core (`0.1.0`). The navbar badge reads from `app/release.ts`. Increase `studioVersion` with every change; CI and the Pages deployment workflow reject updates without a version increase.
+**App release:** Alpha 0.2.1. The browser interface release is independent of the frozen conversion core (`0.1.0`). The navbar badge reads from `app/release.ts`. Increase `studioVersion` with every change; CI and the Pages deployment workflow reject updates without a version increase.
 
 Browser-first image conversion core for **JPG, PNG and WEBP**.
 
@@ -113,7 +113,7 @@ The current `app/` layer provides:
 - isolated app TypeScript and unit tests
 - Chromium and Firefox UI integration coverage
 
-Visual design is intentionally still at the structural foundation stage.
+The desktop interface uses a fixed-height, image-centered workstation with independent scrolling for large file lists and shorter settings panels. Use the header icon to switch between light and dark mode; the selected appearance is retained locally.
 
 ## Scope
 
