@@ -1,140 +1,95 @@
-import { AnimatePresence, motion } from 'motion/react';
-import { ConversionControls } from './components/ConversionControls.js';
-import { DropZone } from './components/DropZone.js';
-import { FileList } from './components/FileList.js';
+import { useRef, useState, type ChangeEvent } from 'react';
+import { FileRail } from './components/FileRail.js';
+import { PreviewStage } from './components/PreviewStage.js';
+import { ProcessingPanel, type SettingsScope } from './components/ProcessingPanel.js';
 import { useImageWorkspace } from './features/workspace/useImageWorkspace.js';
-import { formatBytes } from './lib/format.js';
 import logoUrl from './assets/Red-pfx.svg';
 import styles from './App.module.css';
 
 export function App() {
   const workspace = useImageWorkspace();
   const { items, settings } = workspace.state;
+  const [selectedId, setSelectedId] = useState<string>();
+  const [scope, setScope] = useState<SettingsScope>('all');
+  const [notice, setNotice] = useState('');
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const activeCount = items.filter(
-    (item) => item.status === 'converting',
-  ).length;
-  const completedCount = items.filter(
-    (item) => item.result !== undefined,
-  ).length;
-  const totalInputBytes = items.reduce(
-    (total, item) => total + item.file.size,
-    0,
-  );
+  const selected = items.find((item) => item.id === selectedId) ?? items[0];
+  const effectiveSettings = scope === 'selected'
+    ? (selected?.overrideSettings ?? settings)
+    : settings;
+  const activeCount = items.filter((item) => item.status === 'converting').length;
+  const completedCount = items.filter((item) => item.result !== undefined).length;
+  const readyCount = items.filter((item) => item.result === undefined && item.status !== 'converting').length;
+
+  function handleFiles(files: readonly File[]) {
+    const outcome = workspace.addFiles(files);
+    if (outcome.rejected) setNotice(String(outcome.rejected) + ' unsupported file(s) skipped.');
+    else setNotice('');
+    return outcome;
+  }
+
+  function handlePicker(event: ChangeEvent<HTMLInputElement>) {
+    handleFiles(Array.from(event.target.files ?? []));
+    event.target.value = '';
+  }
+
+  function onSettings(patch: Parameters<typeof workspace.updateSettings>[0]) {
+    workspace.updateSettings(patch, scope === 'selected' ? selected?.id : undefined);
+  }
+
+  function clearAll() {
+    if (activeCount || !items.length) return;
+    if (window.confirm('Remove all images and their processed results?')) {
+      workspace.clearItems();
+      setSelectedId(undefined);
+      setNotice('');
+    }
+  }
 
   return (
     <div className={styles.app}>
-      <header className={styles.header}>
-        <a className={styles.brand} href="./" aria-label="PFx Image Studio home">
-          <span className={styles.mark} aria-hidden="true">
-            <img src={logoUrl} alt="" />
+      <header className={styles.appHeader}>
+        <a href="./" className={styles.brand} aria-label="PFx Image Studio home">
+          <img src={logoUrl} alt="" />
+          <span className={styles.brandWords}>
+            <strong>PFx Image Studio</strong><small>IMAGE WORKSPACE</small>
           </span>
-          <span className={styles.brandCopy}>
-            <span className={styles.brandTitle}>
-              <strong>PFx Image Studio</strong>
-              <span className={styles.betaBadge}>Beta 0.1</span>
-            </span>
-            <small>Image converter</small>
-          </span>
+          <span className={styles.version}>Beta 0.1</span>
         </a>
-
-        <div className={styles.headerMeta}>
-          <span className={styles.statusDot} aria-hidden="true" />
-          <span>Local processing</span>
+        <div className={styles.headerActions}>
+          <span className={styles.localStatus}><i /> Local processing</span>
+          <button className={styles.headerAdd} type="button" onClick={() => inputRef.current?.click()}>
+            <span aria-hidden="true">＋</span> Add images
+          </button>
+          <input ref={inputRef} className={styles.srOnly} type="file" multiple
+            accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp"
+            onChange={handlePicker} aria-label="Choose images to add" />
         </div>
       </header>
 
-      <main className={styles.main}>
-        <AnimatePresence mode="wait" initial={false}>
-          {items.length === 0 ? (
-            <motion.section
-              key="empty"
-              className={styles.emptyState}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className={styles.intro}>
-                <div className={styles.formatLine} aria-label="Supported formats">
-                  <span>JPG</span>
-                  <i />
-                  <span>PNG</span>
-                  <i />
-                  <span>WEBP</span>
-                </div>
-
-                <div className={styles.introCopy}>
-                  <h1>Convert images in your browser.</h1>
-                  <p>
-                    Fast batch conversion with no upload step. Your files stay
-                    on this device.
-                  </p>
-                </div>
-
-                <div className={styles.trustLine}>
-                  <span>Private by default</span>
-                  <span>Batch ready</span>
-                  <span>No account</span>
-                </div>
-              </div>
-
-              <DropZone onFiles={workspace.addFiles} />
-            </motion.section>
-          ) : (
-            <motion.div
-              key="workspace"
-              className={styles.workspace}
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-            >
-              <div className={styles.workspaceTop}>
-                <div className={styles.workspaceHeading}>
-                  <p className={styles.eyebrow}>Workspace</p>
-                  <h1>Image conversion</h1>
-                  <div className={styles.workspaceMeta}>
-                    <span>
-                      {items.length} {items.length === 1 ? 'image' : 'images'}
-                    </span>
-                    <i />
-                    <span>{formatBytes(totalInputBytes)}</span>
-                    {completedCount > 0 && (
-                      <>
-                        <i />
-                        <span>{completedCount} complete</span>
-                      </>
-                    )}
-                  </div>
-                </div>
-
-                <DropZone compact onFiles={workspace.addFiles} />
-              </div>
-
-              <ConversionControls
-                settings={settings}
-                disabled={activeCount > 0}
-                activeCount={activeCount}
-                completedCount={completedCount}
-                onSettings={workspace.updateSettings}
-                onConvertAll={() => void workspace.convertAll()}
-                onCancelAll={workspace.cancelAll}
-                onDownloadAll={workspace.downloadAll}
-                onClear={workspace.clearItems}
-              />
-
-              <FileList
-                items={items}
-                onConvert={(id) => void workspace.convertItem(id)}
-                onCancel={workspace.cancelItem}
-                onRetry={(id) => void workspace.retryItem(id)}
-                onDownload={workspace.downloadItem}
-                onRemove={workspace.removeItem}
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
+      <main className={styles.workArea}>
+        {notice && <p className={styles.globalNotice} role="status">{notice}</p>}
+        <div className={styles.workspaceGrid}>
+          <FileRail items={items} selectedId={selected?.id} onSelect={setSelectedId} onFiles={handleFiles} />
+          <PreviewStage selected={selected} onFiles={handleFiles} />
+          <ProcessingPanel selected={selected} settings={effectiveSettings} scope={scope}
+            onScope={setScope} onSettings={onSettings} activeCount={activeCount}
+            readyCount={readyCount} completedCount={completedCount} itemCount={items.length}
+            onConvert={() => { if (selected) void workspace.convertItem(selected.id); }}
+            onConvertAll={() => { void workspace.convertAll(); }}
+            onCancel={() => { if (selected) workspace.cancelItem(selected.id); }}
+            onCancelAll={workspace.cancelAll}
+            onDownload={() => { if (selected) workspace.downloadItem(selected.id); }}
+            onDownloadAll={workspace.downloadAll}
+            onRetry={() => { if (selected) void workspace.retryItem(selected.id); }}
+            onRemove={() => { if (selected) workspace.removeItem(selected.id); }}
+            onClear={clearAll}
+          />
+        </div>
+        <footer className={styles.appFooter}>
+          <span>PFx Image Studio</span><span>Your images are not uploaded.</span>
+        </footer>
       </main>
     </div>
   );
